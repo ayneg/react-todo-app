@@ -4,16 +4,14 @@ import {v4 as uuidv4 } from "uuid"
 
 
 export const TodoForm = () => {
-    const [todos, setTodos] = useState([
-        { id: 1, name: "todo1", completed:false },
-        { id: 2, name: "todo2", completed:false }
-    ]);
+    const [todos, setTodos] = useState([]);
 
     const todoNameRef = useRef();
 
     const handleAddTodo = () => {
         //タスクを追加
         const name = todoNameRef.current.value;
+        if (name === '') return;
         setTodos((prevTodos) => {
             return [...prevTodos, {id: uuidv4(), name: name, completed: false }];
         });
@@ -27,10 +25,17 @@ export const TodoForm = () => {
         setTodos(newTodos);
     }
 
+    const handleClear = () => {
+        const newTodos = todos.filter((todo) => !todo.completed);
+        setTodos(newTodos);
+    }
+
     return (
         <>
+            <div>Remaining tasks: {todos.filter((todo) => !todo.completed).length}</div>
             <input type="text" ref={todoNameRef} />
             <button onClick={handleAddTodo}>Add</button>
+            <button onClick={handleClear}>Delete</button>
             <TodoList todos={todos} toggleTodo={toggleTodo} />
         </>
   )
